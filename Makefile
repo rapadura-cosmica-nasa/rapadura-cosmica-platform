@@ -1,4 +1,4 @@
-PHONY: up down build sync logs simulate
+.PHONY: up down build sync logs simulate
 
 up:
 	docker compose up --build -d

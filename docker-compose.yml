@@ -21,6 +21,7 @@ services:
       - "8080:8080"
     environment:
       - ANALYTICS_SERVICE_URL=http://telemetry-analytics:5000/api/v1/analyze
+      - SPRING_H2_CONSOLE_SETTINGS_WEB_ALLOW_OTHERS=true
     depends_on:
       telemetry-analytics:
         condition: service_healthy
