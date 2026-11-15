@@ -1,0 +1,9 @@
+[submodule "services/astronaut-health-api"]
+	path = services/astronaut-health-api
+	url = https://github.com/rapadura-cosmica-nasa/astronaut-health-api.git
+[submodule "services/telemetry-analytics"]
+	path = services/telemetry-analytics
+	url = https://github.com/rapadura-cosmica-nasa/telemetry-analytics.git
+[submodule "services/mission-control-ui"]
+	path = services/mission-control-ui
+	url = https://github.com/rapadura-cosmica-nasa/mission-control-ui.git

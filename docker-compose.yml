@@ -1,0 +1,58 @@
+services:
+  telemetry-analytics:
+    build:
+      context: ./services/telemetry-analytics
+    container_name: rapadura-analytics
+    ports:
+      - "5000:5000"
+    networks:
+      - rapadura-net
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/api/v1/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  astronaut-health-api:
+    build:
+      context: ./services/astronaut-health-api
+    container_name: rapadura-api
+    ports:
+      - "8080:8080"
+    environment:
+      - ANALYTICS_SERVICE_URL=http://telemetry-analytics:5000/api/v1/analyze
+    depends_on:
+      telemetry-analytics:
+        condition: service_healthy
+    networks:
+      - rapadura-net
+
+  telemetry-simulator:
+    build:
+      context: ./services/telemetry-analytics
+    container_name: rapadura-simulator
+    command: ["python", "-u", "simulator/telemetry_simulator.py"]
+    environment:
+      - API_URL=http://astronaut-health-api:8080/api/telemetry
+    depends_on:
+      - astronaut-health-api
+    profiles:
+      - simulator
+    networks:
+      - rapadura-net
+
+  mission-control-ui:
+    image: nginx:alpine
+    container_name: rapadura-ui
+    ports:
+      - "3000:80"
+    volumes:
+      - ./services/mission-control-ui:/usr/share/nginx/html:ro
+    depends_on:
+      - astronaut-health-api
+    networks:
+      - rapadura-net
+
+networks:
+  rapadura-net:
+    driver: bridge
